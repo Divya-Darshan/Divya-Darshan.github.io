@@ -1,8 +1,12 @@
 # <img src="./gif/hi.gif" width="29" style="vertical-align: middle; margin-right: 6px;"> Hi, I'm Divya Darshan <!-- <img src="./gif/catcode.gif" width="70"> -->
- Student Developer building cool stuff under the evening sky  
+ Student Developer building cool projects under the evening sky  
  Exploring new technologies every day learning, experimenting, creating  
  Passionate about coding, games & creative projects combining logic and imagination
- 
+
+
+
+<details>
+<summary>Skills and Tools ⛏️</summary>
 <table>
   <tr>
     <td><img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black"/></td>
@@ -37,6 +41,7 @@
   </tr> 
 </table> 
 
+</details>
 
 
 *🤗 Always up for collaboration and learning something new.  

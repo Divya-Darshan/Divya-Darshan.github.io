@@ -14,14 +14,14 @@
 }
 
 body{
-    height:100vh;
+    min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    overflow:hidden;
+    overflow-x:hidden;
+    padding: 20px 0;
 }
 
-/* ---------- BACKGROUND ---------- */
 .bg-skeleton{
     position:fixed;
     inset:0;
@@ -48,7 +48,6 @@ body{
     50%{opacity:1;}
 }
 
-/* ---------- CARD ---------- */
 .container{
     position:relative;
     background:white;
@@ -60,7 +59,6 @@ body{
     overflow:hidden;
 }
 
-/* ---------- SKELETON ---------- */
 .skeleton{
     position:absolute;
     inset:0;
@@ -85,7 +83,6 @@ body{
 .short{width:60%;}
 .btn-skel{height:35px;width:120px;}
 
-/* ---------- REAL CONTENT ---------- */
 .content{
     opacity:0;
     transform:scale(.96) translateY(10px);
@@ -119,18 +116,76 @@ p{
     background:#333;
 }
 
+/* GitHub Stats */
+.gh-stats{
+    margin-top:30px;
+    padding-top:25px;
+    border-top:1px solid #f0f0f0;
+}
+
+.stats-grid{
+    display:flex;
+    gap:15px;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+}
+
+.stat-box{
+    flex:1;
+    min-width:80px;
+    background:#f9f9f9;
+    border-radius:8px;
+    padding:12px;
+    text-align:center;
+}
+
+.stat-box .num{
+    font-size:22px;
+    font-weight:700;
+    color:#111;
+}
+
+.stat-box .label{
+    font-size:11px;
+    color:#888;
+    margin-top:3px;
+}
+
+.stat-loading{
+    background:#e5e7eb;
+    border-radius:6px;
+    height:14px;
+    width:40px;
+    margin:0 auto 4px;
+    animation:pulse 1.4s infinite;
+}
+
+.contrib-wrap{
+    margin-top:5px;
+}
+
+.contrib-wrap p{
+    font-size:12px;
+    color:#aaa;
+    margin-bottom:8px;
+    margin-top:0;
+}
+
+.contrib-wrap img{
+    width:100%;
+    border-radius:6px;
+    filter: invert(0);
+}
 </style>
 </head>
 
 <body>
 
-<!-- Background -->
 <div class="bg-skeleton" id="bgSkeleton"></div>
 <div class="bg-image" id="bgImage"></div>
 
 <div class="container">
 
-<!-- Skeleton -->
 <div id="contentSkeleton" class="skeleton">
     <div class="title"></div>
     <div class="text"></div>
@@ -139,7 +194,6 @@ p{
     <div class="btn-skel"></div>
 </div>
 
-<!-- Real Content -->
 <div id="realContent" class="content">
 <h1>
 <img src="https://raw.githubusercontent.com/Divya-Darshan/Divya-Darshan/refs/heads/main/gif/hi.gif"
@@ -156,13 +210,39 @@ Currently exploring opportunities to grow as a developer.
 <a href="https://github.com/Divya-Darshan"
 target="_blank"
 class="btn">GitHub</a>
+
+<!-- GitHub Stats Section -->
+<div class="gh-stats">
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="num" id="stat-repos"><div class="stat-loading"></div></div>
+            <div class="label">Repos</div>
+        </div>
+        <div class="stat-box">
+            <div class="num" id="stat-stars"><div class="stat-loading"></div></div>
+            <div class="label">Stars</div>
+        </div>
+        <div class="stat-box">
+            <div class="num" id="stat-followers"><div class="stat-loading"></div></div>
+            <div class="label">Followers</div>
+        </div>
+        <div class="stat-box">
+            <div class="num" id="stat-following"><div class="stat-loading"></div></div>
+            <div class="label">Following</div>
+        </div>
+    </div>
+
+    <div class="contrib-wrap">
+        <p>Contribution activity</p>
+        <img src="https://ghchart.rshah.org/Divya-Darshan" alt="GitHub Contribution Chart">
+    </div>
 </div>
 
+</div>
 </div>
 
 <script>
 
-/* Background preload */
 const img = new Image();
 img.src="/img/start.png";
 
@@ -171,22 +251,37 @@ img.onload=()=>{
     document.getElementById("bgSkeleton").style.opacity="0";
 };
 
-/* Smooth skeleton transition */
 window.addEventListener("load",()=>{
-
     setTimeout(()=>{
-
-        document
-          .getElementById("contentSkeleton")
-          .classList.add("hide");
-
-        document
-          .getElementById("realContent")
-          .classList.add("show");
-
+        document.getElementById("contentSkeleton").classList.add("hide");
+        document.getElementById("realContent").classList.add("show");
     },1000);
-
 });
+
+// Fetch GitHub stats
+async function loadGitHubStats(){
+    try {
+        const res = await fetch("https://api.github.com/users/Divya-Darshan");
+        const data = await res.json();
+
+        document.getElementById("stat-repos").textContent = data.public_repos;
+        document.getElementById("stat-followers").textContent = data.followers;
+        document.getElementById("stat-following").textContent = data.following;
+
+        // Fetch stars across all repos
+        const reposRes = await fetch("https://api.github.com/users/Divya-Darshan/repos?per_page=100");
+        const repos = await reposRes.json();
+        const totalStars = repos.reduce((acc, r) => acc + r.stargazers_count, 0);
+        document.getElementById("stat-stars").textContent = totalStars;
+
+    } catch(e) {
+        ["stat-repos","stat-stars","stat-followers","stat-following"]
+            .forEach(id => document.getElementById(id).textContent = "-");
+    }
+}
+
+loadGitHubStats();
+
 </script>
 
 </body>
